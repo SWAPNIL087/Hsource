@@ -5,8 +5,12 @@ import ClipLoader from "react-spinners/ClipLoader";
 import { ReactSearchAutocomplete } from 'react-search-autocomplete';
 import { Items2 } from '../Utils/data';
 import $ from 'jquery'
+import { useHistory } from "react-router-dom";
 
 const Appointment = (props)=>{
+
+    let history = useHistory()
+
     const[data,setdata] = useState([])
     const [loading,setloading] = useState(true)
     const [Items,setItems] = useState([])
@@ -37,6 +41,7 @@ const Appointment = (props)=>{
 
     const AllCities_filter = async()=>{
         setloading(false)
+        setdisease('')
         const res = await axios.get('/users/List_of_Clinics',{
             Headers:{'content-Type':'application/json'},
         })
@@ -134,6 +139,14 @@ const Appointment = (props)=>{
     return (<p className='Typeahead' dangerouslySetInnerHTML={{__html: '<strong>'+item+'</strong>'}}></p>);
     }
     
+    const openclinic = (id)=>{
+        console.log('clinic clicked',id)
+        history.push({
+            pathname: '/BookSlot',
+            state: {id:id},
+    })
+    }   
+
     return(<>
     {
             loading ?
@@ -231,7 +244,7 @@ const Appointment = (props)=>{
         <div className='container'>
             <div className='row'>
                     {data.map((i)=>{return(
-                    <div key={i._id} className='col-lg-4 col-md-6 col-12 mt-4 text-left position-relative store'>
+                    <div key={i._id} onClick={()=>openclinic(i._id)} className='col-lg-4 col-md-6 col-12 mt-4 text-left position-relative store'>
                         <div className='p-2 cards'> 
                             <div className='d-flex'>
                                 <img  height='60px' width='60px' className="img-fluid profile_image mt-auto ml-3" src={i.profileURL}></img>

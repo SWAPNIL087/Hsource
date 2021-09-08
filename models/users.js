@@ -20,6 +20,13 @@ const userSchema = new mongoose.Schema({
     "clinicURL":{
         type:String
     },
+    "opening":{
+        type:String
+    },
+    "closing":{
+        type:String
+    },
+    
     "State":{
         type:String
     },
@@ -30,7 +37,20 @@ const userSchema = new mongoose.Schema({
         type:String
     },
     "features":[String],
-    "slot":[Number]
+    
+    "slot":[Number],
+    
+    "Booking":[{
+        "name":{type:String},
+        "email":{type:String},
+        "contact":{type:String},
+        "slotOpen":{type:String},
+        "slotClose":{type:String},
+        "slotID":{type:String},
+        "date":{type:String},
+        "attented":{type:String},
+        "Disease":{type:String},
+    }]
 })
 
 userSchema.pre('save',async function(next){

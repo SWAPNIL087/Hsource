@@ -26,7 +26,8 @@ const Register = (props)=>{
     const classes = useStyles();
 
     const [value, setValue] = React.useState([20, 37]);
-
+    const[openingTime,setOtime] = useState()
+    const[closingTime,setCtime] = useState()
     const[email,setemail] = useState()
     const[password,setpassword] = useState()
     const[cpassword,setcpassword] = useState()
@@ -63,7 +64,9 @@ const Register = (props)=>{
             description:description,
             clinicURL:clinicURL,
             features:store,
-            slot:value
+            slot:value,
+            opening:openingTime,
+            closing:closingTime
         }
         
         const res = await axios.post('/users/register',{
@@ -71,14 +74,24 @@ const Register = (props)=>{
             json:true,
             body:container
         })
-    
-        console.log(res.data)
+        
+        console.log(res)
+        if(res.data=='failure'){
+            $('.failure_msg').removeClass('d-none')
+            $('.step1').addClass('d-none')
+            $('.step2').addClass('d-none')
+            $('.step3').addClass('d-none')
+            $('.bullet3').addClass('d-none')
+            $('.circle3').removeClass('d-none')}
+        
+        else{
         $('.success_msg').removeClass('d-none')
         $('.step1').addClass('d-none')
         $('.step2').addClass('d-none')
         $('.step3').addClass('d-none')
         $('.bullet3').addClass('d-none')
-        $('.circle3').removeClass('d-none')
+        $('.circle3').removeClass('d-none')}
+        
     }
 
     const UploadImg = (e)=>{
@@ -96,7 +109,8 @@ const Register = (props)=>{
         .then(data=>{
             console.log(data)
             setprofileURL(data.url)
-            $('tick2').removeClass('d-none')
+            console.log('the tick show be visible now')
+            $('.tick2').removeClass('d-none')
         })
         .catch(err=>{
             console.log(err)
@@ -124,8 +138,10 @@ const Register = (props)=>{
         .then(res=>res.json())
         .then(data=>{
             console.log(data)
+            console.log('the tick should be visible now')
+            $('.tick1').removeClass('d-none')
             setclinicURL(data.url)
-            $('tick1').removeClass('d-none')
+            
         })
         .catch(err=>{
             console.log(err)
@@ -174,7 +190,6 @@ const Register = (props)=>{
             setemail(tememail)
         }
         else{
-            console.log('>>>haan bhai kya hora')
             $('.emailWarning').removeClass('d-none')
         }
     }
@@ -333,6 +348,11 @@ const Register = (props)=>{
 
                     <div className=' col-lg-6 col-md-6 col-12'>
                         <div className="form-group ">
+
+                        <label for="appt"><span className='font-weight-bold'>Opening time:</span></label>
+                        <input onChange={(e)=>{setOtime(e.target.value)}} type="time" id="appt" name="appt"/>
+                        <label className='ml-5' for="appt"><span className='font-weight-bold'>Closing time:</span></label>
+                        <input onChange={(e)=>{setCtime(e.target.value)}} type="time" id="appt" name="appt"/>
                             <h5 className='mt-2 text-left ml-5'>Slots Duration : <small>(mins)</small> </h5>
                             <div className='ml-5'>
                             <div className={classes.root}>
@@ -447,6 +467,9 @@ const Register = (props)=>{
                     </div>
                     <div className='success_msg d-none'>
                     <p className='text-danger'><strong>User Registered!.</strong> <span className='text-success'>Login to continue</span></p>
+                    </div>
+                    <div className='failure_msg d-none'>
+                    <p className='text-danger'><strong>User already registered!.</strong> <span className='text-success'>Use different email continue</span></p>
                     </div>
                 </form>
 
