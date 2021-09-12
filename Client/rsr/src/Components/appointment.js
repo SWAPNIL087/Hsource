@@ -25,6 +25,7 @@ const Appointment = (props)=>{
         })
         
         var arr = []
+        
         for (var i=0;i<res.data.length;i++){
             arr.push({'id':i,'name':res.data[i].docName})
             console.log(res.data[i].docName)
@@ -143,7 +144,7 @@ const Appointment = (props)=>{
         console.log('clinic clicked',id)
         history.push({
             pathname: '/BookSlot',
-            state: {id:id},
+            state: {id:id,disease:disease},
     })
     }   
 

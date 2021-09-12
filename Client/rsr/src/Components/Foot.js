@@ -7,7 +7,7 @@ import {FaLinkedinIn} from 'react-icons/fa'
 const Foot = ()=>{
     return(
         <>
-        <div className='col-10 m-auto pt-5 pb-5 mb-0 tem_foot text-left'>
+        <div className='col-10 m-auto pt-2 pb-5 mb-0 tem_foot text-left'>
             <div className='row m-0'>
                 <div className='col-lg-6 col-12'>
                     <p>Need some help?</p>

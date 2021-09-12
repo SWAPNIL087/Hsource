@@ -28,7 +28,7 @@ const Clinic_Recommends = ()=>{
         console.log('clinic clicked',id)
         history.push({
             pathname: '/BookSlot',
-            state: {id:id},
+            state: {id:id,disease:location.state.disease},
     })
     } 
 
