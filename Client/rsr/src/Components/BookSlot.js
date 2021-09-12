@@ -3,31 +3,60 @@ import Foot from './Foot';
 import $ from 'jquery'
 import { useLocation } from "react-router-dom";
 import axios from 'axios'
+import ClipLoader from "react-spinners/ClipLoader";
 
 const BookSlot = ()=>{
     const location = useLocation();
-    console.log('------------------------',location.state.id)
-    const[opening,setopening] = useState('initial')
-    const[closing,setclosing] = useState('initial')
-    const[slotsize,setslotsize] = useState()
+    const [loading,setloading] = useState(true)
+    const [opening,setopening] = useState('initial')
+    const [closing,setclosing] = useState('initial')
+    const [slotsize,setslotsize] = useState()
+    const [BookedSlots,setBookedSlots] = useState([])
+    const [slide,setslide] = useState(1)
+    const [startime,setstarttime] = useState()
+    const [endtime,setendtime] = useState()
+    const [Selected_date,setdate] = useState(date)
+    const [slotno,setslotno] = useState()
+    const [slot_id,setSlot_id] = useState()
+    const [patient,setpatient] = useState()
+    const [email,setemail] = useState()
+    const [contact,setcontact] = useState()
+    const [msg,setmsg] = useState()
 
     useEffect(async()=>{
         var container={
             id:location.state.id
         }
+        setloading(false)
+
         const res = await axios.post('/users/clinic_details',{
             Headers:{'content-Type':'application/json'},
             json:true,
             body:container
         })
-
+        var tem = []
+        for(var i=0;i<res.data[0].Booking.length;i++){
+            var tem_id =  res.data[0].Booking[i].slotID
+            tem.push(tem_id)
+        }
+        setBookedSlots(tem)
         setopening(res.data[0].opening)
         setclosing(res.data[0].closing)
         var slot = parseInt((res.data[0].slot[0] + res.data[0].slot[1])/2)
         setslotsize(slot)
-
+        var currdate = (Date().toLocaleString())
+        var store = currdate.split(' ')
+        var time = store[4]
+        var date = store[2]+'.'+store[1]+'.'+store[3]
+        setdate(date)
+        setloading(true)
     },[])
 
+    var currdate = (Date().toLocaleString())
+        var store = currdate.split(' ')
+        var time = store[4]
+        var date = store[2]+'.'+store[1]+'.'+store[3]
+        
     const convertTime12to24 = (time12h) => {
         const [time, modifier] = time12h.split(' ');
       
@@ -74,39 +103,25 @@ const BookSlot = ()=>{
         return tem
     }
 
-    var currdate = (Date().toLocaleString())
-    var store = currdate.split(' ')
-    var time = store[4]
-    var date = store[2]+'.'+store[1]+'.'+store[3]
-    console.log(time,date)
-
-    //this is required from the DB--------------------------------------------
-
-    // const slotsize = 35; // in mins 
-    // const opening = '1:30 PM'
-    // const closing = '10:00 PM'
     
-    //this is required from the DB--------------------------------------------
 
     var open =  convertTime12to24(opening)
     var minutes =  convertintomins(open)
     var close = convertTime12to24(closing)
     var minutes2 = convertintomins(close)
     const totalslots = calculateSlots(minutes,minutes2,slotsize)
-    console.log(totalslots)
+    //console.log(totalslots)
 
-    const [startime,setstarttime] = useState()
-    const [endtime,setendtime] = useState()
-    const [Selected_date,setdate] = useState(date)
-    const[slotno,setslotno] = useState()
-    const[slot_id,setSlot_id] = useState()
+    
 
     const selectSlot = (a,b,id)=>{
+        console.log(id,'===================================================')
         if(a==1){
         setSlot_id(id)
-        var slot_no = b.props.children[2].props.children[1]
+        //console.log(b.props.children)
+        var slot_no = b.props.children[1].props.children[1]
 
-        var store = b.props.children[3].props.children
+        var store = b.props.children[2].props.children
 
         // console.log(startime,endtime,slot_no)
         setstarttime(store[0])
@@ -129,10 +144,10 @@ const BookSlot = ()=>{
             var end = convertminTohrs(tem,slotsize)
         }
         var tem2 = convertintominssecs(time)
-        if(tem<tem2){
+        if(tem<tem2 || BookedSlots.includes(Selected_date+(i+1))){
             //not allowed to book slot
             options.push([0,
-                    <div className='cell2 p-1'>
+                    <div className='cell2 p-1' id={Selected_date+(i+1)}>
                     <p className='position-absolute mark2'></p>
                     <h5 className='mt-3'>Slot-{i+1}</h5>
                     <small>{start}-<strong>to-</strong>{end}</small>
@@ -142,8 +157,8 @@ const BookSlot = ()=>{
         else{
             //available slot
             options.push([1,
-                    <div className='cell p-1'>
-                    <strong className='d-none'>{Selected_date}</strong>
+                    <div className='cell p-1' id={Selected_date+(i+1)}>
+                    {/* <strong className='d-none'>{Selected_date}</strong> */}
                     <p className='position-absolute mark'></p>
                     <h5 className='mt-3'>Slot-{i+1}</h5>
                     <small>{start}-<strong>to-</strong>{end}</small>
@@ -153,9 +168,6 @@ const BookSlot = ()=>{
         
     }
     
-    const[patient,setpatient] = useState()
-    const[email,setemail] = useState()
-    const[contact,setcontact] = useState()
 
     const finalbooking = async(e)=>{
         e.preventDefault();
@@ -173,22 +185,81 @@ const BookSlot = ()=>{
             email:email,
             contact:contact,
             slot_id:slot_id,
-            slot_no:slotno
-
+            slot_no:slotno,
+            id:location.state.id,
+            disease:location.state.disease
         }
-        console.log(startime,endtime,Selected_date,patient,email,contact)
+
         const res = await axios.post('/users/Book_a_slot',{
             Headers:{'content-Type':'application/json'},
             json:true,
             body:container
         })
-        console.log(res)
-        
+
+        $('.main_modal_body').addClass('d-none')
+        $('.msg').removeClass('d-none')
+        $('.bookBTN').addClass('d-none')
+        setmsg(res.data)
+        if(res.data=='Slot booked you will shortly recieve a confirmation email.'){
+        setTimeout(() => {
+            window.location.reload() 
+        }, 2000);}
         }
     }
 
+    
+
+    const moveDateBack = ()=>{
+        if(slide==1){
+            console.log("first slide")
+        }
+        if(slide==2){
+            console.log("first slide")
+            var currdate = (Date().toLocaleString())
+            var store = currdate.split(' ')
+            var time = store[4]
+            var date = store[2]+'.'+store[1]+'.'+store[3]
+            setdate(date)
+            setslide(slide-1)
+        }
+        if(slide==3){
+            console.log("going a day back")
+            var myDate = new Date()
+            //add a day to the date
+            myDate.setDate(myDate.getDate() + (1));
+            var store = myDate.toDateString().split(' ')
+            console.log(store)
+            var time = store[4]
+            var date = store[2]+'.'+store[1]+'.'+store[3]
+            setdate(date)
+            setslide(slide-1)
+        }
+    }
+
+    const moveDateAhead = async()=>{
+        if(slide==3){
+            console.log("last slide")
+        }
+
+        else{
+            // change the setdate to one day ahead
+            console.log('increase the date')
+            var myDate = new Date()
+            //add a day to the date
+            myDate.setDate(myDate.getDate() + (slide));
+            var store = myDate.toDateString().split(' ')
+            console.log(store)
+            var time = store[4]
+            var date = store[2]+'.'+store[1]+'.'+store[3]
+            setdate(date)
+            setslide(slide+1)
+        }
+    }
     return(
         <>
+        {
+            loading ?
+            <div>
         <div className='position-absolute position-fixed mt-2 ml-2'>
                     <div className='d-flex'>
                     <p className='mark mt-1 mr-2'></p>
@@ -204,7 +275,11 @@ const BookSlot = ()=>{
         
             <div className='row'>
 
-            <button type="button" className="btn btn-primary d-none launchbtn" data-toggle="modal" data-target="#exampleModal4">
+            <button type="button" onClick={()=>{
+                $('.main_modal_body').removeClass('d-none')
+                $('.msg').addClass('d-none')
+                $('.bookBTN').removeClass('d-none')
+            }} className="btn btn-primary d-none launchbtn" data-toggle="modal" data-target="#exampleModal4">
             Launch demo modal
             </button>
 
@@ -218,8 +293,9 @@ const BookSlot = ()=>{
                     </button>
                 </div>
                 <div className="modal-body">
-                <strong>{startime} to {endtime}</strong><br/>
-                <strong>{Selected_date}</strong>
+                    <div className='main_modal_body'>
+                    <strong>{startime} to {endtime}</strong><br/>
+                    <strong>{Selected_date}</strong>
                     <form className='text-left mt-3'>
                         <label for='name'>Name : </label>
                         <input onChange={(e)=>{setpatient(e.target.value)}} className='float-right mr-5' id='name' placeholder="enter name" name='name' type='text'></input><br/>
@@ -228,10 +304,15 @@ const BookSlot = ()=>{
                         <label for='telephone'>Contact Number : </label>
                         <input onChange={(e)=>{setcontact(e.target.value)}} className='float-right mr-5' type="tel" name="telphone" placeholder="888 888 8888" pattern="[0-9]{3} [0-9]{3} [0-9]{4}" maxlength="12"  title="Ten digits code" required/><br/>
                     </form>
+                    </div>
+                    <div className='msg'>
+                    <p className='text-danger'>{msg}</p>
+                    </div>
                 </div>
+                
                 <div className="modal-footer">
                     <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button onClick={finalbooking} type="button" className="btn btn-primary">Book</button>
+                    <button onClick={finalbooking} type="button" className="btn btn-primary bookBTN">Book</button>
                 </div>
                 </div>
             </div>
@@ -250,23 +331,79 @@ const BookSlot = ()=>{
                      </div>
                 </div>
                 
-                <div className='calender border container m-auto w-75'>
-                    <div className='row m-auto w-100'>
-                    {options.map((i,idx)=>{
-                        return(
-                            <div key={Selected_date+(idx+1)} id={Selected_date+(idx+1)} onClick={()=>selectSlot(i[0],i[1],Selected_date+(idx+1))} className='mb-3 mt-3 col-lg-3 col-md-6 col-12'>
-                                {i[1]}
+
+
+                <div id="carouselExampleControls" className="carousel slide" data-interval="false" data-wrap="false">
+                    <div className="carousel-inner">
+                        <div className="carousel-item active">
+                            <div className='calender border container m-auto w-75'>
+                                <div className='row m-auto w-100'>
+                                {options.map((i,idx)=>{
+                                    return(
+                                        <div key={Selected_date+(idx+1)} onClick={()=>selectSlot(i[0],i[1],Selected_date+(idx+1))} className='mb-3 mt-3 col-lg-3 col-md-6 col-12'>
+                                            {i[1]}
+                                        </div>
+                                    )
+                                })}
+                                </div>
                             </div>
-                        )
-                    })}
+
+                        </div>
+                        <div className="carousel-item">
+                            <div className='calender border container m-auto w-75'>
+                                <div className='row m-auto w-100'>
+                                {options.map((i,idx)=>{
+                                    return(
+                                        <div key={Selected_date+(idx+1)} onClick={()=>selectSlot(i[0],i[1],Selected_date+(idx+1))} className='mb-3 mt-3 col-lg-3 col-md-6 col-12'>
+                                            {i[1]}
+                                        </div>
+                                    )
+                                })}
+                                </div>
+                            </div>
+
+                        </div>
+                        <div className="carousel-item">
+                            <div className='calender border container m-auto w-75'>
+                                <div className='row m-auto w-100'>
+                                {options.map((i,idx)=>{
+                                    return(
+                                        <div key={Selected_date+(idx+1)} onClick={()=>selectSlot(i[0],i[1],Selected_date+(idx+1))} className='mb-3 mt-3 col-lg-3 col-md-6 col-12'>
+                                            {i[1]}
+                                        </div>
+                                    )
+                                })}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                    <a className='float-left carousel_left'>
+                        <span onClick={moveDateBack} className="carousel-control-prev text-danger" href="#carouselExampleControls" role="button" data-slide="prev" style={{backgroundColor:'black',borderRadius:'50%'}} className="carousel-control-prev-icon text-danger" aria-hidden="true"></span>
+                        <span className="sr-only">Previous</span>
+                    </a>
+                    </div>
+                    <div>
+                    <a className='float-right carousel_right'>
+                        <span onClick={moveDateAhead} className="carousel-control-next text-danger" href="#carouselExampleControls" role="button" data-slide="next" style={{backgroundColor:'black',borderRadius:'50%'}} className="carousel-control-next-icon text-danger" aria-hidden="true"></span>
+                        <span className="sr-only">Next</span>
+                    </a>
                     </div>
                 </div>
             </div>
             
         </div>
-        <div className='footer fixed'>
+        <div className='footer position-relative fixed-bottom'>
             <Foot/>
         </div>
+        </div>
+        :
+        <div  className='Loader'>
+                <ClipLoader color={'#16f1cd'} loading={true} size={50}/>
+                <p>Loading</p>
+            </div>
+            
+        }
         </>
     )
 }
