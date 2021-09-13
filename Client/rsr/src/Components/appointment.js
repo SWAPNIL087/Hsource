@@ -25,6 +25,7 @@ const Appointment = (props)=>{
         })
         
         var arr = []
+        
         for (var i=0;i<res.data.length;i++){
             arr.push({'id':i,'name':res.data[i].docName})
             console.log(res.data[i].docName)
