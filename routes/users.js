@@ -1,5 +1,14 @@
 const express = require("express");
 const router = express.Router();
+var nodemailer = require('nodemailer');
+const schedule = require('node-schedule')
+let mailTransporter = nodemailer.createTransport({ 
+    service: 'gmail', 
+    auth: { 
+        user: process.env.Nodemailer_USER, 
+        pass: process.env.Nodemailer_PASS
+    } 
+}); 
 
 const User = require('../models/users')
 
@@ -67,7 +76,82 @@ router.post('/clinic_details',async(req,res)=>{
 
 router.post('/Book_a_slot',async(req,res)=>{
     console.log('booking details recieved now checking availablility')
+    const{startime,endtime,date,patient,email,contact,slot_id,slot_no,id,disease,name} = req.body.body
+
     console.log(req.body.body)
+    console.log(slot_id)
+    const slot_preBooked = await User.find({
+        Booking:{
+            $elemMatch:{slotID:slot_id}
+        }}
+    )
+    console.log(slot_preBooked)
+    if(slot_preBooked.length==0){
+        const data = await User.find({
+            Booking:{
+                $elemMatch:{email:email,date:date}
+            }
+        })
+    
+        console.log(data)
+        if(data.length==0){
+            console.log('no record found book a slot')
+            var newData = {
+                name:patient,
+                email:email,
+                contact:contact,
+                slotOpen:startime,
+                slotClose:endtime,
+                slotID:slot_id,
+                date:date,
+                Disease:disease
+            }
+            User.findByIdAndUpdate(
+                id,
+                {
+                    $push:{
+                        "Booking":newData
+                    }
+                },
+                {safe:true,upset:true},
+                function(err,model){
+                    console.log(err)
+                }
+            )
+            
+            console.log("sucess")
+            // send an confirmation email to the email id recieved!
+            var msg = "Hi, "+patient+" this is a remainder for your appointment at "+name+" on "+date+", "+startime+"."
+            let mailDetails = { 
+                from: 'swapniltiwari2524@gmail.com', 
+                to: email, 
+                subject: 'Appointment Reminder', 
+                text: msg
+            }; 
+            mailTransporter.sendMail(mailDetails, function(err, data) { 
+                if(err) { 
+                    throw err; 
+                } else { 
+                    console.log('Email sent successfully'); 
+                }
+            }) 
+
+            //schedule another remainder an hour before actual appointment
+            
+
+            res.send("Slot booked you will shortly recieve a confirmation email.")
+        }
+        else{
+            console.log('repeated User')
+            res.send('You have already booked an appointment this day with this email.')
+        }
+    }
+    
+    else{
+        console.log('overlap')
+        res.send('This Slot is already Booked!')
+    }
+
 })
 
 

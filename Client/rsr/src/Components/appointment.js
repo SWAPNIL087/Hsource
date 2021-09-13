@@ -139,11 +139,11 @@ const Appointment = (props)=>{
     return (<p className='Typeahead' dangerouslySetInnerHTML={{__html: '<strong>'+item+'</strong>'}}></p>);
     }
     
-    const openclinic = (id)=>{
+    const openclinic = (id,name)=>{
         console.log('clinic clicked',id)
         history.push({
             pathname: '/BookSlot',
-            state: {id:id},
+            state: {id:id,name:name},
     })
     }   
 
@@ -244,7 +244,7 @@ const Appointment = (props)=>{
         <div className='container'>
             <div className='row'>
                     {data.map((i)=>{return(
-                    <div key={i._id} onClick={()=>openclinic(i._id)} className='col-lg-4 col-md-6 col-12 mt-4 text-left position-relative store'>
+                    <div key={i._id} onClick={()=>openclinic(i._id,i.docName)} className='col-lg-4 col-md-6 col-12 mt-4 text-left position-relative store'>
                         <div className='p-2 cards'> 
                             <div className='d-flex'>
                                 <img  height='60px' width='60px' className="img-fluid profile_image mt-auto ml-3" src={i.profileURL}></img>

@@ -24,11 +24,11 @@ const Clinic_Recommends = ()=>{
         setdata(res.data)
     },[])
 
-    const openclinic = (id)=>{
+    const openclinic = (id,name)=>{
         console.log('clinic clicked',id)
         history.push({
             pathname: '/BookSlot',
-            state: {id:id},
+            state: {id:id,name:name},
     })
     } 
 
@@ -41,7 +41,7 @@ const Clinic_Recommends = ()=>{
             <div className='container'>
             <div className='row'>
                     {data.map((i)=>{return(
-                    <div  onClick={()=>openclinic(i._id)} key={i._id} className='col-lg-4 col-md-6 col-12 mt-4 text-left position-relative store'>
+                    <div  onClick={()=>openclinic(i._id,i.docName)} key={i._id} className='col-lg-4 col-md-6 col-12 mt-4 text-left position-relative store'>
                         <div className='p-2 cards'> 
                             <div className='d-flex'>
                                 <img  height='60px' width='60px' className="img-fluid profile_image mt-auto ml-3" src={i.profileURL}></img>
