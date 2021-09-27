@@ -135,9 +135,46 @@ router.post('/Book_a_slot',async(req,res)=>{
                     console.log('Email sent successfully'); 
                 }
             }) 
+            console.log(date)
+            var [d,m,y] = date.split('.')
+            var [H,M] = startime.split(':')
 
+            H = (H-1)%24
+
+            let cal = {
+                'Jan':0,
+                'Feb':1,
+                'Mar':2,
+                'Apr':3,
+                'May':4,
+                'Jun':5,
+                'Jul':6,
+                'Aug':7,
+                'Sep':8,
+                'Oct':9,
+                'Nov':10,
+                'Dec':11
+            }
+            var mon = cal[m]
             //schedule another remainder an hour before actual appointment
+            const date = new Date(parseInt(y), mon, parseInt(d), parseInt(H), parseInt(M), 0);
             
+            const job = schedule.scheduleJob(date, function(){
+                var msg = "Hi, "+patient+" this is a remainder for your appointment at "+name+" today - "+date+", "+startime+"."
+                let mailDetails = { 
+                    from: 'swapniltiwari2524@gmail.com', 
+                    to: email, 
+                    subject: 'Appointment Reminder', 
+                    text: msg
+                }; 
+                mailTransporter.sendMail(mailDetails, function(err, data) { 
+                    if(err) { 
+                        throw err; 
+                    } else { 
+                        console.log('Email sent successfully'); 
+                    }
+                }) 
+            });
 
             res.send("Slot booked you will shortly recieve a confirmation email.")
         }

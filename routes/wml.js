@@ -19,7 +19,7 @@ router.post("/score", async (req, res) => {
       }
     }
     console.log(template)
-
+    console.log(process.env.AUTH_URL)
     const options = {
       method: "POST",
       url: process.env.AUTH_URL,
@@ -60,6 +60,14 @@ router.post("/score", async (req, res) => {
             }]
         })
       };
+    //   var sample ={
+    //     input_data: [{
+    //         fields:fields ,
+    //         values: [template]
+    //     }]
+    // }
+    // console.log(sample)
+    // console.log('--------------------------------------------------')
 
       let scoring_response = "";
       try {
