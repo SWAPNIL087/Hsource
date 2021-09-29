@@ -16,7 +16,7 @@ const Home = ()=>{
                 </small>
             </div>
             <div className='col-6 m-auto'>
-                <NavLink className='btn btn-primary float-right mb-5 mt-4' to='/'>Book Appointment</NavLink>
+                <NavLink className='btn btn-primary float-right mb-5 mt-4' to='/appointment'>Book Appointment</NavLink>
             </div>
             <div className='col-6 m-auto'>
                 <NavLink className='btn btn-light float-left mb-5 mt-4' to='/symptoms'>Check symptom</NavLink>

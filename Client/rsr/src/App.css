@@ -506,6 +506,14 @@ input[type=range]::-webkit-slider-thumb {
   transform: translateY(-50%);
 }
 
+.prev{
+  position:absolute;
+  margin-left:-44%;
+  top:150px;
+  -ms-transform: translateY(-500%);
+  transform: translateY(-500%);
+}
+
 .carousel_right{
   position:absolute;
   margin-left:50%;
@@ -514,7 +522,33 @@ input[type=range]::-webkit-slider-thumb {
   transform: translateY(-50%);
 }
 
+.next{
+  position:absolute;
+  margin-left:42%;
+  top:150px;
+  -ms-transform: translateY(-500%);
+  transform: translateY(-500%);
+}
+
 .carousel_left,.carousel_right :hover{
   cursor: pointer;
 }
 
+.booking-box{
+  border-radius: 20px;
+}
+
+.patient_details:hover{
+  cursor: pointer; 
+}
+
+.b1{
+  font-size: small;
+  margin-right: 5px !important;
+  margin-top: 5px !important;
+}
+
+.h_line{
+  width:75% !important;
+  margin:auto;
+}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { NavLink, useHistory } from 'react-router-dom';
 import axios from 'axios';
-import {$} from 'jquery'
+import $ from 'jquery';
 const Navbar = ()=>{
     const history = useHistory()
     const [email,setemail] = useState()
@@ -29,9 +29,14 @@ const Navbar = ()=>{
             })
         
             console.log(res.data)
-
+            if (res.data == 'Login Success'){
+                console.log('connecting further...')
+                $('.close').click()
+                history.push({
+                    pathname: '/Clinic_login'
+            })  
+            }
         }
-        
     }
     return(
         <>
@@ -45,6 +50,9 @@ const Navbar = ()=>{
                 <ul className="navbar-nav ml-auto">
                 <li className="nav-item">
                     <NavLink className="nav-link" to="/">About</NavLink>
+                </li>
+                <li className="nav-item">
+                    <NavLink className="nav-link" to="/Clinic_login">MyClinic</NavLink>
                 </li>
                 <li className="nav-item">
                     <NavLink className="nav-link" to="/appointment">Appointment</NavLink>

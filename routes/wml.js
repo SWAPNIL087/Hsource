@@ -60,14 +60,6 @@ router.post("/score", async (req, res) => {
             }]
         })
       };
-    //   var sample ={
-    //     input_data: [{
-    //         fields:fields ,
-    //         values: [template]
-    //     }]
-    // }
-    // console.log(sample)
-    // console.log('--------------------------------------------------')
 
       let scoring_response = "";
       try {
