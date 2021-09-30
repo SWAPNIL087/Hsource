@@ -277,4 +277,10 @@ router.post('/booking_status',authenticate,async(req,res)=>{
 res.send('updated')
 })
 
+router.get('/logout',authenticate,async(req,res)=>{
+    console.log('logout')
+    res.clearCookie('jwtoken',{path:'/'})
+    res.send('User Logout')
+})
+
 module.exports = router;
