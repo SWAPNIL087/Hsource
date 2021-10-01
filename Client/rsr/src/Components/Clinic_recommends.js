@@ -8,6 +8,7 @@ const Clinic_Recommends = ()=>{
     let history = useHistory()
     const [data,setdata] = useState([])
     useEffect(async()=>{
+        console.log(location.state.disease,location.state.city)
         var container ={
             disease:location.state.disease,
             city:location.state.city
@@ -28,7 +29,7 @@ const Clinic_Recommends = ()=>{
         console.log('clinic clicked',id)
         history.push({
             pathname: '/BookSlot',
-            state: {id:id,name:name},
+            state: {id:id,name:name,disease:location.state.disease},
     })
     } 
 

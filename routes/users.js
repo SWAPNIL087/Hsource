@@ -90,6 +90,7 @@ router.get('/List_of_Clinics',async(req,res)=>{
 router.post('/suggested_clinics',async(req,res)=>{
     var disease = req.body.body.disease
     var city = req.body.body.city
+    console.log(disease,city)
     const data = await User.find({features: disease,city:city})
     console.log(data)
     res.send(data)

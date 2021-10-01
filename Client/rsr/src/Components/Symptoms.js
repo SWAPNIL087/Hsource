@@ -84,7 +84,7 @@ const Symptoms = ()=>{
     })
 
     
-    console.log(res.data)
+    console.log(res.data,'>>>>>>>>>')
 
     history.push({
         pathname: '/Clinic_Recommends',

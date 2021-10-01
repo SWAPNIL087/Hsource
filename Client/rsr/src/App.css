@@ -552,3 +552,7 @@ input[type=range]::-webkit-slider-thumb {
   width:75% !important;
   margin:auto;
 }
+
+.PIE{
+  margin-top:10% !important;
+}

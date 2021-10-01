@@ -58,6 +58,12 @@ const Clinic_login = ()=>{
                 }
             }
             console.log(arr)
+            if(arr.length==0){
+                $('.blank_msg').removeClass('d-none');
+            }
+            else{
+                $('.blank_msg').addClass('d-none');
+            }
             setinfo(arr)
 
         }
@@ -137,6 +143,12 @@ const Clinic_login = ()=>{
                 }
             }
             console.log(arr)
+            if(arr.length==0){
+                $('.blank_msg').removeClass('d-none');
+            }
+            else{
+                $('.blank_msg').addClass('d-none');
+            }
             setinfo(arr)
             
         }
@@ -159,6 +171,12 @@ const Clinic_login = ()=>{
                 }
             }
             console.log(arr)
+            if(arr.length==0){
+                $('.blank_msg').removeClass('d-none');
+            }
+            else{
+                $('.blank_msg').addClass('d-none');
+            }
             setinfo(arr)
         }
         
@@ -189,6 +207,12 @@ const Clinic_login = ()=>{
                 }
             }
             console.log(arr)
+            if(arr.length==0){
+                $('.blank_msg').removeClass('d-none');
+            }
+            else{
+                $('.blank_msg').addClass('d-none');
+            }
             setinfo(arr)
             
         }
@@ -233,6 +257,9 @@ const Clinic_login = ()=>{
                 <div id="carouselExampleControls" className="carousel slide" data-interval="false" data-wrap="false">
                     <div className="carousel-inner">
                         <div className="carousel-item active">
+                        <div className='blank_msg d-none'>
+                            <strong className='text-danger'>No appointments for today!</strong>
+                        </div>
                         {info.map((i,idx)=>{return(
                     <div key={i._id} className='container col-12 w-100 m-auto'>
                         <div className='row col-lg-8 col-md-10 col-12 m-auto p-3 booking-box'>
@@ -279,6 +306,9 @@ const Clinic_login = ()=>{
                     }
                         </div>
                         <div className="carousel-item">
+                        <div className='blank_msg d-none'>
+                            <strong className='text-danger'>No appointments for today!</strong>
+                        </div>
                         {info.map((i,idx)=>{return(
                     <div key={i._id} className='container col-12 w-100 m-auto'>
                         <div className='row col-lg-8 col-md-10 col-12 m-auto p-3 booking-box'>
@@ -325,6 +355,9 @@ const Clinic_login = ()=>{
                     }
                         </div>
                         <div className="carousel-item">
+                        <div className='blank_msg d-none'>
+                            <strong className='text-danger'>No appointments for today!</strong>
+                        </div>
                         {info.map((i,idx)=>{return(
                     <div key={i._id} className='container col-12 w-100 m-auto'>
                         <div className='row col-lg-8 col-md-10 col-12 m-auto p-3 booking-box'>

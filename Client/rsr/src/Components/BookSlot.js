@@ -27,6 +27,7 @@ const BookSlot = ()=>{
         var container={
             id:location.state.id
         }
+        
         setloading(false)
 
         const res = await axios.post('/users/clinic_details',{
@@ -177,6 +178,8 @@ const BookSlot = ()=>{
         else{
 
         //making final Booking 
+        console.log('------------------------------------------------------------------')
+        console.log(location.state.disease)
         var container={
             startime:startime,
             endtime:endtime,
